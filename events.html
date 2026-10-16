@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lagos Live | Events, Concerts & Nightlife</title>
+    <link rel="icon" type="image/png" href="/lagos-live-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/lagos-live-shared.css">
+
+    <style>
+        :root {
+            --bg: #070d14;
+            --sidebar: #0b121b;
+            --card: #101923;
+            --card-hover: #14222f;
+            --border: #1d2b38;
+            --text: #ffffff;
+            --muted: #718092;
+            --blue: #00bfff;
+            --blue-dark: #0077ff;
+            --green: #20d99b;
+            --yellow: #ffc857;
+            --red: #ff6078;
+            --shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+
+        .logo {
+            height: 38px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin: 18px 12px 8px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: var(--card-hover);
+        }
+
+        .nav-item.active {
+            color: var(--blue);
+            background: rgba(0, 191, 255, 0.12);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 28px 36px 60px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome p {
+            font-size: 13.5px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Category Filter Chips */
+        .category-row {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+        }
+
+        .cat-chip {
+            padding: 8px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .cat-chip:hover {
+            color: #fff;
+            border-color: var(--blue);
+        }
+
+        .cat-chip.active {
+            background: rgba(0, 191, 255, 0.15);
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* Search Filter */
+        .filter-search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 16px;
+            height: 44px;
+            max-width: 420px;
+            margin-bottom: 28px;
+        }
+
+        .filter-search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+        }
+
+        /* Events Grid */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 191, 255, 0.4);
+        }
+
+        .event-banner {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            position: relative;
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(7, 13, 20, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .price-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(32, 217, 155, 0.2);
+            border: 1px solid rgba(32, 217, 155, 0.4);
+            color: var(--green);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .event-details {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .event-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .event-desc {
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 10px 0 16px;
+        }
+
+        .event-actions {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-ticket {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ticket:hover {
+            box-shadow: 0 4px 12px rgba(0, 191, 255, 0.4);
+        }
+
+        .btn-fav {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 6px;
+            transition: color 0.2s;
+        }
+
+        .btn-fav.active {
+            color: var(--red);
+        }
+
+        /* Ticket Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .ticket-modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            padding: 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+                    <img src="/lagos-live-logo.png" alt="Lagos Live" class="logo" onerror="this.src='lagos live logo.png'">
+                    <span style="font-weight:800;font-size:15px;color:#fff;">LAGOS LIVE</span>
+                </a>
+            </div>
+
+            <nav>
+                <div class="nav-title">City Pulse</div>
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="transport.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-traffic-light"></i></span>
+                    <span>Transport & Traffic</span>
+                </a>
+                <a href="weather.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-cloud-sun-rain"></i></span>
+                    <span>Weather & Flood</span>
+                </a>
+                <a href="events.html" class="nav-item active">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span>Events & Nightlife</span>
+                </a>
+                <a href="explore.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-compass"></i></span>
+                    <span>Explore Lagos</span>
+                </a>
+
+                <div class="nav-title">Services & Tools</div>
+                <a href="emergency.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-truck-medical" style="color:var(--red);"></i></span>
+                    <span>Emergency (112)</span>
+                </a>
+                <a href="saved.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-heart" style="color:var(--red);"></i></span>
+                    <span>Saved Items</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="index.html" class="logout-btn nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="welcome">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1>What's Happening in Lagos</h1>
+                            <p>Afrobeats concerts, tech summits, beach raves, comedy nights, and art exhibitions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <a href="saved.html" class="district-pill" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;">
+                        <i class="fa-solid fa-heart" style="color:var(--red);"></i>
+                        <span>View Saved Events</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Category Chips -->
+            <div class="category-row">
+                <button class="cat-chip active" onclick="filterCategory(this, 'all')">🎉 All Events (9)</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'music')">🎶 Afrobeats & Music</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'tech')">🚀 Tech & Startups</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'food')">🍲 Food & Suya Fests</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'art')">🎨 Art & Culture</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'beach')">🏖️ Beach Parties</button>
+                <button class="cat-chip" onclick="filterCategory(this, 'comedy')">🎭 Theatre & Comedy</button>
+            </div>
+
+            <!-- Search Filter Bar -->
+            <div class="filter-search-box">
+                <i class="fa-solid fa-magnifying-glass" style="color:var(--muted);"></i>
+                <input type="text" id="eventSearch" placeholder="Search by title, artist, or Lagos venue..." oninput="filterBySearch(this.value)">
+            </div>
+
+            <!-- Events Grid -->
+            <div class="events-grid" id="eventsContainer">
+                <!-- Event 1 -->
+                <div class="event-card" data-category="music beach">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #0052D4, #4364F7);">
+                        🏖️
+                        <span class="category-tag">Afrobeats & Beach</span>
+                        <span class="price-badge">₦10,000</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Afrobeats Sunset Live by the Waves</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> This Saturday, 5:00 PM WAT</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Landmark Beach, Oniru, Victoria Island</div>
+                        <p class="event-desc">Live headline DJ sets, guest artist performances, bonfire, beach volleyball, and chilled palm-wine cocktails.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Afrobeats Sunset Live', '₦10,000', 'Landmark Beach')">Get Ticket / Pass</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Afrobeats Sunset Live', 'Landmark Beach')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="event-card" data-category="tech">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #00bfff, #0077ff);">
+                        🚀
+                        <span class="category-tag">Tech Summit</span>
+                        <span class="price-badge">Free RSVP</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Lagos AI & Builders Summit 2026</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> Friday, 9:00 AM – 4:00 PM</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Landmark Centre, Water Corporation Drive</div>
+                        <p class="event-desc">Join 2,000+ software engineers, startup founders, and investors exploring artificial intelligence applications across Africa.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Lagos AI & Builders Summit', 'Free RSVP', 'Landmark Centre')">Register Pass</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Lagos AI & Builders Summit', 'Landmark Centre')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 3 -->
+                <div class="event-card" data-category="art">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
+                        🎨
+                        <span class="category-tag">Art & Heritage</span>
+                        <span class="price-badge">₦5,000</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Eko Heritage & Contemporary Art Expo</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> Sunday, 12:00 PM – 7:00 PM</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Nike Art Gallery, Lekki Phase 1</div>
+                        <p class="event-desc">Featuring 5 floors of West African textiles, metal sculptures, adire masterclasses, and curator walkthroughs with Chief Nike Davies-Okundaye.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Eko Heritage Art Expo', '₦5,000', 'Nike Art Gallery')">Reserve Entry</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Eko Heritage Art Expo', 'Nike Art Gallery')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 4 -->
+                <div class="event-card" data-category="food">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                        🍢
+                        <span class="category-tag">Food & Suya</span>
+                        <span class="price-badge">₦3,500</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Lagos Street Suya & Grills Fiesta</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> Sunday, 2:00 PM – 10:00 PM</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Muri Okunola Park, Victoria Island</div>
+                        <p class="event-desc">The ultimate celebration of authentic Nigerian barbecue: Glover Court suya, asun, amala spots, gourmet jollof cook-offs, and live highlife tunes.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Lagos Street Suya Fiesta', '₦3,500', 'Muri Okunola Park')">Get Food Pass</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Lagos Street Suya Fiesta', 'Muri Okunola Park')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 5 -->
+                <div class="event-card" data-category="comedy">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #8A2387, #E94057);">
+                        🎭
+                        <span class="category-tag">Theatre & Comedy</span>
+                        <span class="price-badge">₦12,000</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Lagos Night of 1000 Laughs & Stage Play</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> Saturday, 6:30 PM WAT</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Terra Kulture, Tiamiyu Savage, VI</div>
+                        <p class="event-desc">An evening of side-splitting standup comedy by Nigeria's sharpest comedians followed by a critically acclaimed Broadway-style stage play.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Night of 1000 Laughs', '₦12,000', 'Terra Kulture')">Book Seats</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Night of 1000 Laughs', 'Terra Kulture')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event 6 -->
+                <div class="event-card" data-category="beach music">
+                    <div class="event-banner" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">
+                        🌊
+                        <span class="category-tag">Boat & Beach Rave</span>
+                        <span class="price-badge">₦7,500</span>
+                    </div>
+                    <div class="event-details">
+                        <h3 class="event-title">Tarkwa Bay Island Boat Cruise & Jam</h3>
+                        <div class="event-meta"><i class="fa-regular fa-calendar"></i> Sunday, 11:00 AM Departure</div>
+                        <div class="event-meta"><i class="fa-solid fa-location-dot"></i> Departure: CMS Ferry Terminal to Tarkwa Bay</div>
+                        <p class="event-desc">Speedboat ride across the harbor to Tarkwa Bay Beach. Surf lessons, fresh coconut water, quad biking on dunes, and sunset acoustic sessions.</p>
+                        <div class="event-actions">
+                            <button class="btn-ticket" onclick="openTicketModal('Tarkwa Bay Cruise', '₦7,500', 'Tarkwa Bay')">Get Cruise Pass</button>
+                            <button class="btn-fav" onclick="toggleSaveEvent(this, 'Tarkwa Bay Cruise', 'Tarkwa Bay')"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Ticket Pass Modal -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="ticket-modal">
+            <button class="modal-close" onclick="closeTicketModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div style="text-align:center;margin-bottom:18px;">
+                <span style="font-size:36px;">🎟️</span>
+                <h3 style="font-size:18px;font-weight:800;margin-top:6px;" id="modalEventTitle">Event Pass</h3>
+                <span style="font-size:12px;color:var(--muted);" id="modalEventVenue">Lagos Venue</span>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.03);border:1px dashed var(--border);border-radius:14px;padding:16px;margin-bottom:18px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;">
+                    <span style="color:var(--muted);">Tier:</span>
+                    <strong>Standard General Admission</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;">
+                    <span style="color:var(--muted);">Price:</span>
+                    <strong style="color:var(--green);" id="modalEventPrice">₦0</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                    <span style="color:var(--muted);">Confirmation:</span>
+                    <strong style="color:var(--blue);" id="modalPassId">LL-2026-PASS</strong>
+                </div>
+            </div>
+
+            <button class="btn-ticket" style="width:100%;height:44px;font-size:14px;" onclick="confirmTicketPass()">
+                <i class="fa-solid fa-qrcode"></i> Confirm Reservation
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/lagos-live-shared.js"></script>
+    <script>
+        function filterCategory(btn, category) {
+            document.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("active"));
+            btn.classList.add("active");
+
+            const cards = document.querySelectorAll(".event-card");
+            cards.forEach(card => {
+                if (category === "all") {
+                    card.style.display = "";
+                } else {
+                    const cats = card.getAttribute("data-category") || "";
+                    card.style.display = cats.includes(category) ? "" : "none";
+                }
+            });
+        }
+
+        function filterBySearch(query) {
+            query = query.trim().toLowerCase();
+            const cards = document.querySelectorAll(".event-card");
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(query) ? "" : "none";
+            });
+        }
+
+        function openTicketModal(title, price, venue) {
+            document.getElementById("modalEventTitle").textContent = title;
+            document.getElementById("modalEventPrice").textContent = price;
+            document.getElementById("modalEventVenue").textContent = venue;
+            document.getElementById("modalPassId").textContent = "LL-" + Math.floor(100000 + Math.random() * 900000);
+            document.getElementById("ticketModal").classList.add("open");
+        }
+
+        function closeTicketModal() {
+            document.getElementById("ticketModal").classList.remove("open");
+        }
+
+        function confirmTicketPass() {
+            const title = document.getElementById("modalEventTitle").textContent;
+            window.showToast("Pass Reserved!", `Your pass for "${title}" is confirmed. Check your email or saved items.`, "success");
+            closeTicketModal();
+        }
+
+        function toggleSaveEvent(btn, title, location) {
+            const icon = btn.querySelector("i");
+            const item = {
+                id: "event-" + title.toLowerCase().replace(/\s+/g, "-"),
+                name: title,
+                title: title,
+                type: "event",
+                location: location,
+                note: "Saved from Lagos Live Events"
+            };
+            const added = window.toggleBookmark(item);
+            if (added) {
+                icon.className = "fa-solid fa-heart";
+                btn.classList.add("active");
+            } else {
+                icon.className = "fa-regular fa-heart";
+                btn.classList.remove("active");
+            }
+        }
+    </script>
+</body>
+
+</html>

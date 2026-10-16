@@ -1,0 +1,6 @@
+{
+  "name": "Lagos Live",
+  "description": "Discover what's happening, check live weather and traffic, explore places, follow transport updates, and stay connected to Lagos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account | Lagos Live</title>
+    <meta name="description" content="Sign up for Lagos Live to customize city alerts, track transit routes, bookmark places, and get real-time Lagos updates." />
+    <link rel="icon" type="image/png" href="/lagos-live-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/lagos-live-shared.css">
+
+    <style>
+        :root {
+            --bg: #070d14;
+            --panel: rgba(13, 24, 36, .94);
+            --card: #101923;
+            --input: #0b151f;
+            --border: #20303e;
+            --text: #f5f9fc;
+            --muted: #8ea3b8;
+            --blue: #00bfff;
+            --blue-2: #0077ff;
+            --green: #20d99b;
+            --yellow: #ffc857;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(5, 10, 16, 0.75), rgba(6, 16, 25, 0.88)),
+                url("/lagos-ikoyi.jpg") center / cover no-repeat fixed;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 38px 34px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-logo {
+            height: 48px;
+            width: auto;
+            margin-bottom: 12px;
+            border-radius: 10px;
+        }
+
+        .signup-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .signup-title span {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .signup-desc {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .input-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 12px;
+            transition: all 0.2s;
+        }
+
+        .input-wrap:focus-within {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+        }
+
+        .input-wrap i {
+            color: var(--muted);
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 42px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+        }
+
+        .select-field {
+            width: 100%;
+            height: 42px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .select-field option {
+            background: #0b151f;
+            color: #fff;
+        }
+
+        .interest-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .chip.active {
+            background: rgba(0, 191, 255, 0.15);
+            border-color: var(--blue);
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        .terms-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 18px 0;
+            font-size: 12.5px;
+            color: var(--muted);
+        }
+
+        .terms-row input {
+            margin-top: 3px;
+            accent-color: var(--blue);
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-2));
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.35);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 191, 255, 0.5);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .footer-note a {
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-container">
+        <div class="signup-header">
+            <a href="index.html">
+                <img src="/lagos-live-logo.png" alt="Lagos Live" class="brand-logo" onerror="this.src='lagos live logo.png'">
+            </a>
+            <h1 class="signup-title">Connect with <span>Lagos Live</span></h1>
+            <p class="signup-desc">Get tailored traffic updates, live weather forecasts, and event highlights across Lagos.</p>
+        </div>
+
+        <form id="signupForm" onsubmit="handleRegistration(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <div class="input-wrap">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="firstName" class="input-field" placeholder="Adewale" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <div class="input-wrap">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" id="lastName" class="input-field" placeholder="Ogunleye" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <div class="input-wrap">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" class="input-field" placeholder="adewale@example.com" required>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Lagos Neighborhood / LGA</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <select id="neighborhood" class="select-field">
+                            <option value="Lekki & Ikate">Lekki & Ikate</option>
+                            <option value="Victoria Island">Victoria Island</option>
+                            <option value="Ikoyi">Ikoyi</option>
+                            <option value="Ikeja & Alausa">Ikeja & Alausa</option>
+                            <option value="Yaba & Surulere">Yaba & Surulere</option>
+                            <option value="Lagos Island / Marina">Lagos Island / Marina</option>
+                            <option value="Ikorodu">Ikorodu</option>
+                            <option value="Festac & Amuwo">Festac & Amuwo</option>
+                            <option value="Ajah & Sangotedo">Ajah & Sangotedo</option>
+                            <option value="Epe">Epe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Primary Commute Mode</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-bus"></i>
+                        <select id="commute" class="select-field">
+                            <option value="BRT & Public Bus">BRT & Public Bus</option>
+                            <option value="Personal Car">Personal Car</option>
+                            <option value="Lagos Blue/Red Rail">Lagos Blue/Red Rail</option>
+                            <option value="Lagferry (Waterways)">Lagferry (Waterways)</option>
+                            <option value="Ride-Hailing">Ride-Hailing (Uber/Bolt)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" class="input-field" placeholder="Create a strong password" required minlength="6">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">What do you want to follow in Lagos?</label>
+                <div class="interest-chips">
+                    <div class="chip active" onclick="this.classList.toggle('active')">🚦 Live Traffic & Bridges</div>
+                    <div class="chip active" onclick="this.classList.toggle('active')">🌧️ Weather & Rain Alerts</div>
+                    <div class="chip active" onclick="this.classList.toggle('active')">🎉 Afrobeats & Weekend Events</div>
+                    <div class="chip" onclick="this.classList.toggle('active')">🏖️ Beaches & Hidden Spots</div>
+                    <div class="chip" onclick="this.classList.toggle('active')">🚆 Blue & Red Line Rail</div>
+                    <div class="chip" onclick="this.classList.toggle('active')">🚨 Emergency Broadcasts</div>
+                </div>
+            </div>
+
+            <label class="terms-row">
+                <input type="checkbox" required checked>
+                <span>I agree to receive city alerts, emergency notifications, and transit updates from Lagos Live.</span>
+            </label>
+
+            <button type="submit" class="submit-btn">
+                <span>Create Lagos Live Account</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+
+        <div class="footer-note">
+            Already have an account? <a href="index.html">Log In here</a> · <a href="dashboard.html">Explore as Guest</a>
+        </div>
+    </div>
+
+    <script src="/lagos-live-shared.js"></script>
+    <script>
+        function handleRegistration(e) {
+            e.preventDefault();
+            const first = document.getElementById("firstName").value.trim();
+            const last = document.getElementById("lastName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const neighborhood = document.getElementById("neighborhood").value;
+            const commute = document.getElementById("commute").value;
+
+            const user = {
+                id: "user-" + Date.now(),
+                name: `${first} ${last}`.trim(),
+                email: email,
+                area: neighborhood,
+                commuteMode: commute,
+                role: "member",
+                signedInAt: new Date().toISOString()
+            };
+
+            localStorage.setItem("lagosLiveUser", JSON.stringify(user));
+            if (window.showToast) {
+                window.showToast("Account Created", `Welcome to Lagos Live, ${user.name}!`, "success");
+            }
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 600);
+        }
+    </script>
+</body>
+
+</html>

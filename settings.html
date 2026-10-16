@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lagos Live | Settings & Preferences</title>
+    <link rel="icon" type="image/png" href="/lagos-live-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/lagos-live-shared.css">
+
+    <style>
+        :root {
+            --bg: #070d14;
+            --sidebar: #0b121b;
+            --card: #101923;
+            --card-hover: #14222f;
+            --border: #1d2b38;
+            --text: #ffffff;
+            --muted: #718092;
+            --blue: #00bfff;
+            --blue-dark: #0077ff;
+            --green: #20d99b;
+            --yellow: #ffc857;
+            --red: #ff6078;
+            --shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+
+        .logo {
+            height: 38px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin: 18px 12px 8px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: var(--card-hover);
+        }
+
+        .nav-item.active {
+            color: var(--blue);
+            background: rgba(0, 191, 255, 0.12);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        /* Main */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 28px 36px 60px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome p {
+            font-size: 13.5px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* Settings Split Layout */
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 28px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 860px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .s-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+
+        .s-menu-btn:hover {
+            color: var(--text);
+            background: var(--card);
+        }
+
+        .s-menu-btn.active {
+            color: var(--blue);
+            background: rgba(0, 191, 255, 0.12);
+            border-color: rgba(0, 191, 255, 0.25);
+        }
+
+        /* Settings Panels */
+        .settings-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .panel-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 16px;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .s-info h4 {
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .s-info p {
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
+        /* Theme Buttons */
+        .theme-button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-btn.active {
+            background: rgba(0, 191, 255, 0.15);
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #1e2c3a;
+            border-radius: 999px;
+            transition: .3s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .3s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--blue);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Form Inputs */
+        .s-input, .s-select {
+            width: 100%;
+            height: 42px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 14px;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            margin-top: 6px;
+        }
+
+        .s-select option {
+            background: #0b151f;
+        }
+
+        .btn-save-settings {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 4px 14px rgba(0, 191, 255, 0.35);
+        }
+
+        .danger-card {
+            border-color: rgba(255, 96, 120, 0.3);
+            background: rgba(255, 96, 120, 0.04);
+        }
+
+        .btn-danger {
+            padding: 8px 16px;
+            background: rgba(255, 96, 120, 0.15);
+            border: 1px solid rgba(255, 96, 120, 0.4);
+            color: var(--red);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: var(--red);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+                    <img src="/lagos-live-logo.png" alt="Lagos Live" class="logo" onerror="this.src='lagos live logo.png'">
+                    <span style="font-weight:800;font-size:15px;color:#fff;">LAGOS LIVE</span>
+                </a>
+            </div>
+
+            <nav>
+                <div class="nav-title">City Pulse</div>
+                <a href="dashboard.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="transport.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-traffic-light"></i></span>
+                    <span>Transport & Traffic</span>
+                </a>
+                <a href="weather.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-cloud-sun-rain"></i></span>
+                    <span>Weather & Flood</span>
+                </a>
+                <a href="events.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span>Events & Nightlife</span>
+                </a>
+                <a href="explore.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-compass"></i></span>
+                    <span>Explore Lagos</span>
+                </a>
+
+                <div class="nav-title">Services & Tools</div>
+                <a href="emergency.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-truck-medical" style="color:var(--red);"></i></span>
+                    <span>Emergency (112)</span>
+                </a>
+                <a href="saved.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-heart" style="color:var(--red);"></i></span>
+                    <span>Saved Items</span>
+                </a>
+                <a href="settings.html" class="nav-item active">
+                    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="index.html" class="logout-btn nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="welcome">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                        <div>
+                            <h1>Settings & Preferences</h1>
+                            <p>Customize Lagos Live themes, notifications, profile details, and accessibility modes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-size:13px;color:var(--green);display:flex;align-items:center;gap:6px;">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <span>Synchronized locally</span>
+                </div>
+            </header>
+
+            <!-- Settings Layout -->
+            <div class="settings-layout">
+                <!-- Nav -->
+                <div class="settings-nav">
+                    <button class="s-menu-btn active" onclick="switchSettingsSection(this, 'appearance')">
+                        <i class="fa-solid fa-palette"></i> Appearance
+                    </button>
+                    <button class="s-menu-btn" onclick="switchSettingsSection(this, 'account')">
+                        <i class="fa-solid fa-user"></i> Profile & Area
+                    </button>
+                    <button class="s-menu-btn" onclick="switchSettingsSection(this, 'notifications')">
+                        <i class="fa-solid fa-bell"></i> Notifications
+                    </button>
+                    <button class="s-menu-btn" onclick="switchSettingsSection(this, 'accessibility')">
+                        <i class="fa-solid fa-universal-access"></i> Accessibility
+                    </button>
+                    <button class="s-menu-btn" onclick="switchSettingsSection(this, 'danger')">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Data & Storage
+                    </button>
+                </div>
+
+                <!-- Sections -->
+                <div>
+                    <!-- Appearance Section -->
+                    <div id="sec-appearance" class="settings-card">
+                        <h2 class="panel-title">Appearance & Color Theme</h2>
+                        <p class="panel-desc">Choose between Lagos Dark, Daytime Light, or automatic system sync.</p>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Interface Theme</h4>
+                                <p>Applied instantly across all pages and widgets.</p>
+                            </div>
+                            <div class="theme-button-group">
+                                <button class="theme-btn active" id="btn-theme-dark" onclick="selectTheme('dark')">
+                                    <i class="fa-solid fa-moon"></i> Dark
+                                </button>
+                                <button class="theme-btn" id="btn-theme-light" onclick="selectTheme('light')">
+                                    <i class="fa-solid fa-sun"></i> Light
+                                </button>
+                                <button class="theme-btn" id="btn-theme-system" onclick="selectTheme('system')">
+                                    <i class="fa-solid fa-laptop"></i> System
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>City Accent Glow</h4>
+                                <p>Highlight bridges and status cards with vibrant cyan & green.</p>
+                            </div>
+                            <span class="district-pill" style="color:var(--green);background:rgba(32,217,155,0.1);font-weight:700;">Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Profile Section -->
+                    <div id="sec-account" class="settings-card" style="display:none;">
+                        <h2 class="panel-title">Profile & Lagos Commute Details</h2>
+                        <p class="panel-desc">Your profile determines default transit suggestions and local weather alerts.</p>
+
+                        <form onsubmit="handleSaveProfile(event)">
+                            <div style="margin-bottom:16px;">
+                                <label style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;">Full Name</label>
+                                <input type="text" id="profName" class="s-input" placeholder="e.g. Tunde Balogun" value="Lagos Explorer">
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;">Email Address</label>
+                                <input type="email" id="profEmail" class="s-input" placeholder="e.g. tunde@lagoslive.ng" value="guest@lagoslive.ng">
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;">Primary Lagos Neighborhood</label>
+                                <select id="profArea" class="s-select">
+                                    <option value="Lekki Phase 1 & Ikate">Lekki Phase 1 & Ikate</option>
+                                    <option value="Victoria Island">Victoria Island</option>
+                                    <option value="Ikoyi">Ikoyi</option>
+                                    <option value="Ikeja & Alausa">Ikeja & Alausa</option>
+                                    <option value="Yaba & Surulere">Yaba & Surulere</option>
+                                    <option value="Lagos Island / Marina">Lagos Island / Marina</option>
+                                    <option value="Ikorodu">Ikorodu</option>
+                                    <option value="Ajah & Sangotedo">Ajah & Sangotedo</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-bottom:16px;">
+                                <label style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;">Preferred Greeting Style</label>
+                                <select id="profLang" class="s-select">
+                                    <option value="en">English ("Good morning 👋")</option>
+                                    <option value="pidgin">Nigerian Pidgin ("How body / Good morning o 👋")</option>
+                                    <option value="yo">Yoruba ("E kaaro / E kaasan 👋")</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-save-settings">Save Profile Changes</button>
+                        </form>
+                    </div>
+
+                    <!-- Notifications Section -->
+                    <div id="sec-notifications" class="settings-card" style="display:none;">
+                        <h2 class="panel-title">City Alerts & Notifications</h2>
+                        <p class="panel-desc">Control what alerts you receive in the topbar notification bell.</p>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Bridge & Expressway Traffic Delays</h4>
+                                <p>Alerts for congestion on Third Mainland, Eko Bridge and Lekki Toll.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-traffic" checked onchange="saveNotificationPref('traffic', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Severe Rain & Flash Flood Warnings</h4>
+                                <p>Drainage alerts for low-lying coastal areas during heavy tropical downpours.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-weather" checked onchange="saveNotificationPref('weather', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Lagos Rail & Transit Delays</h4>
+                                <p>Real-time notifications for Blue Line, Red Line, and BRT schedule changes.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-transit" checked onchange="saveNotificationPref('transit', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Weekend Events & Beach Parties</h4>
+                                <p>Curated recommendations for Afrobeats gigs, art fairs, and food festivals.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="notif-events" checked onchange="saveNotificationPref('events', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Accessibility Section -->
+                    <div id="sec-accessibility" class="settings-card" style="display:none;">
+                        <h2 class="panel-title">Accessibility & Comfort</h2>
+                        <p class="panel-desc">Customize typography, contrast, and layout density.</p>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Large Text Mode</h4>
+                                <p>Increases base font size across headlines and content for easier readability.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="acc-large" onchange="saveAccessPref('largeText', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>High Contrast Borders</h4>
+                                <p>Emphasizes borders on cards, buttons, and navigation elements.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="acc-contrast" onchange="saveAccessPref('highContrast', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Compact Density Mode</h4>
+                                <p>Reduces padding on cards to show more city data at a glance.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="acc-compact" onchange="saveAccessPref('compactMode', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Reduced Motion</h4>
+                                <p>Disables animated pulses, glowing transitions, and smooth scrolls.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="acc-motion" onchange="saveAccessPref('reduceMotion', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone Section -->
+                    <div id="sec-danger" class="settings-card danger-card" style="display:none;">
+                        <h2 class="panel-title" style="color:var(--red);">Data & Local Storage Management</h2>
+                        <p class="panel-desc">Manage locally stored bookmarks, cached transit feeds, and session state.</p>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Clear Bookmarks & Saved Places</h4>
+                                <p>Removes all saved places, planned routes, and emergency contacts.</p>
+                            </div>
+                            <button class="btn-danger" onclick="clearAllBookmarks()">Clear Saved</button>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Reset Settings to Factory Defaults</h4>
+                                <p>Reverts appearance, accessibility, and notifications to default values.</p>
+                            </div>
+                            <button class="btn-danger" onclick="resetFactorySettings()">Reset Settings</button>
+                        </div>
+
+                        <div class="setting-row">
+                            <div class="s-info">
+                                <h4>Log Out of Lagos Live</h4>
+                                <p>Clears the current session and returns to the welcome portal.</p>
+                            </div>
+                            <a href="index.html" class="btn-danger" style="text-decoration:none;display:inline-block;" onclick="localStorage.removeItem('lagosLiveUser')">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/lagos-live-shared.js"></script>
+    <script>
+        function switchSettingsSection(btn, secId) {
+            document.querySelectorAll(".s-menu-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            ["appearance", "account", "notifications", "accessibility", "danger"].forEach(s => {
+                const el = document.getElementById("sec-" + s);
+                if (el) el.style.display = (s === secId) ? "block" : "none";
+            });
+        }
+
+        function selectTheme(theme) {
+            document.querySelectorAll(".theme-btn").forEach(b => b.classList.remove("active"));
+            const targetBtn = document.getElementById("btn-theme-" + theme);
+            if (targetBtn) targetBtn.classList.add("active");
+
+            window.saveLagosSettings({ theme });
+            window.showToast("Theme Updated", `Switched to ${theme} theme.`, "success");
+        }
+
+        function saveAccessPref(key, value) {
+            const update = {};
+            update[key] = value;
+            window.saveLagosSettings(update);
+            window.showToast("Preference Saved", `${key} updated.`, "info");
+        }
+
+        function saveNotificationPref(type, enabled) {
+            const current = window.getLagosSettings();
+            const notifs = current.notifications || {};
+            notifs[type] = enabled;
+            window.saveLagosSettings({ notifications: notifs });
+            window.showToast("Notification Saved", `Alerts for ${type} ${enabled ? 'enabled' : 'disabled'}.`, "info");
+        }
+
+        function handleSaveProfile(e) {
+            e.preventDefault();
+            const name = document.getElementById("profName").value.trim() || "Lagos Explorer";
+            const email = document.getElementById("profEmail").value.trim() || "guest@lagoslive.ng";
+            const area = document.getElementById("profArea").value;
+            const lang = document.getElementById("profLang").value;
+
+            const user = {
+                name,
+                email,
+                area,
+                role: "member",
+                updatedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem("lagosLiveUser", JSON.stringify(user));
+            window.saveLagosSettings({ language: lang });
+            window.syncUserProfile();
+            window.showToast("Profile Updated", `Saved preferences for ${name}.`, "success");
+        }
+
+        function clearAllBookmarks() {
+            if (confirm("Are you sure you want to clear all your saved places, routes, and emergency contacts?")) {
+                window.saveBookmarks([]);
+                window.showToast("Cleared", "All saved items were removed.", "info");
+            }
+        }
+
+        function resetFactorySettings() {
+            if (confirm("Reset all settings to defaults?")) {
+                localStorage.removeItem("lagosLiveSettings");
+                window.applySharedSettings();
+                window.showToast("Reset Complete", "Settings reverted to defaults.", "info");
+                setTimeout(() => location.reload(), 400);
+            }
+        }
+
+        // Initialize UI from localStorage
+        document.addEventListener("DOMContentLoaded", () => {
+            const s = window.getLagosSettings();
+            // Theme button
+            document.querySelectorAll(".theme-btn").forEach(b => b.classList.remove("active"));
+            const themeBtn = document.getElementById("btn-theme-" + (s.theme || "dark"));
+            if (themeBtn) themeBtn.classList.add("active");
+
+            // Accessibility
+            if (document.getElementById("acc-large")) document.getElementById("acc-large").checked = !!s.largeText;
+            if (document.getElementById("acc-contrast")) document.getElementById("acc-contrast").checked = !!s.highContrast;
+            if (document.getElementById("acc-compact")) document.getElementById("acc-compact").checked = !!s.compactMode;
+            if (document.getElementById("acc-motion")) document.getElementById("acc-motion").checked = !!s.reduceMotion;
+
+            // Profile
+            let user = null;
+            try { user = JSON.parse(localStorage.getItem("lagosLiveUser") || "{}"); } catch {}
+            if (user?.name && document.getElementById("profName")) document.getElementById("profName").value = user.name;
+            if (user?.email && document.getElementById("profEmail")) document.getElementById("profEmail").value = user.email;
+            if (user?.area && document.getElementById("profArea")) document.getElementById("profArea").value = user.area;
+            if (s.language && document.getElementById("profLang")) document.getElementById("profLang").value = s.language;
+        });
+    </script>
+</body>
+
+</html>

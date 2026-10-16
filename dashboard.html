@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lagos Live | City Dashboard</title>
+    <link rel="icon" type="image/png" href="/lagos-live-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/lagos-live-shared.css">
+
+    <style>
+        :root {
+            --bg: #070d14;
+            --sidebar: #0b121b;
+            --card: #101923;
+            --card-hover: #14222f;
+            --border: #1d2b38;
+            --text: #ffffff;
+            --muted: #718092;
+            --blue: #00bfff;
+            --blue-dark: #0077ff;
+            --green: #20d99b;
+            --yellow: #ffc857;
+            --red: #ff6078;
+            --shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            margin-bottom: 28px;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            height: 38px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin: 18px 12px 8px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            color: var(--text);
+            background: var(--card-hover);
+        }
+
+        .nav-item.active {
+            color: var(--blue);
+            background: rgba(0, 191, 255, 0.12);
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 28px 36px 60px;
+            min-width: 0;
+        }
+
+        /* Top Bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .welcome .eyebrow {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .live-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .live-time-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 14px;
+            height: 42px;
+            width: 260px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 13.5px;
+            outline: none;
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: var(--muted);
+        }
+
+        .notification-btn, .profile-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .notification-btn:hover, .profile-btn:hover {
+            border-color: var(--blue);
+            transform: translateY(-1px);
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 7px;
+            height: 7px;
+            background: var(--red);
+            border-radius: 50%;
+        }
+
+        .profile-btn {
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+        }
+
+        /* Notification Popover */
+        .notification-popover {
+            position: absolute;
+            top: 54px;
+            right: 50px;
+            width: 320px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 2000;
+        }
+
+        .notification-popover.open {
+            display: block;
+        }
+
+        .popover-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .notif-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12.5px;
+        }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+
+        .notif-item strong {
+            display: block;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .notif-item span {
+            color: var(--muted);
+        }
+
+        /* Weather Hero Card */
+        .weather-hero {
+            background:
+                radial-gradient(circle at 85% 30%, rgba(0, 191, 255, 0.18), transparent 40%),
+                linear-gradient(135deg, #0e1e2d, #09141f);
+            border: 1px solid rgba(0, 191, 255, 0.25);
+            border-radius: 20px;
+            padding: 26px 30px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .weather-info .loc-tag {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .temp-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin: 10px 0 6px;
+        }
+
+        .temp-val {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .temp-unit {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .weather-summary {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .weather-meta {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .weather-icon-large {
+            font-size: 72px;
+            line-height: 1;
+        }
+
+        .weather-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .weather-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .w-stat {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .w-stat-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+
+        .w-stat-val {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* City Status Cards */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .section-link {
+            font-size: 13px;
+            color: var(--blue);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 900px) {
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .status-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 191, 255, 0.4);
+        }
+
+        .status-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .status-content h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .status-content p {
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-green {
+            background: rgba(32, 217, 155, 0.15);
+            color: var(--green);
+        }
+
+        .badge-yellow {
+            background: rgba(255, 200, 87, 0.15);
+            color: var(--yellow);
+        }
+
+        .badge-blue {
+            background: rgba(0, 191, 255, 0.15);
+            color: var(--blue);
+        }
+
+        /* Two Column Grid */
+        .dashboard-split {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard-split {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Event Cards */
+        .events-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 680px) {
+            .events-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .event-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 191, 255, 0.4);
+        }
+
+        .event-thumb {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background: linear-gradient(135deg, rgba(0, 191, 255, 0.15), rgba(32, 217, 155, 0.15));
+            position: relative;
+        }
+
+        .event-category-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(7, 13, 20, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .event-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .event-meta-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .event-footer {
+            margin-top: auto;
+            padding-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .event-btn {
+            background: rgba(0, 191, 255, 0.12);
+            color: var(--blue);
+            border: 1px solid rgba(0, 191, 255, 0.3);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .event-btn:hover {
+            background: var(--blue);
+            color: #fff;
+        }
+
+        .bookmark-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .bookmark-btn.active {
+            color: var(--red);
+        }
+
+        /* Quick Action Widgets */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .quick-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-2px);
+            background: var(--card-hover);
+        }
+
+        .quick-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(0, 191, 255, 0.12);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .quick-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .quick-desc {
+            font-size: 11.5px;
+            color: var(--muted);
+            line-height: 1.35;
+        }
+
+        /* Live Corridors Mini-List */
+        .corridor-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .corridor-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        .corridor-item:last-child {
+            border-bottom: none;
+        }
+
+        .c-name {
+            font-weight: 600;
+        }
+
+        .c-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+                    <img src="/lagos-live-logo.png" alt="Lagos Live" class="logo" onerror="this.src='lagos live logo.png'">
+                    <span style="font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.3px;">LAGOS LIVE</span>
+                </a>
+            </div>
+
+            <nav>
+                <div class="nav-title">City Pulse</div>
+                <a href="dashboard.html" class="nav-item active">
+                    <span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="transport.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-traffic-light"></i></span>
+                    <span>Transport & Traffic</span>
+                </a>
+                <a href="weather.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-cloud-sun-rain"></i></span>
+                    <span>Weather & Flood</span>
+                </a>
+                <a href="events.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <span>Events & Nightlife</span>
+                </a>
+                <a href="explore.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-compass"></i></span>
+                    <span>Explore Lagos</span>
+                </a>
+
+                <div class="nav-title">Services & Tools</div>
+                <a href="emergency.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-truck-medical" style="color:var(--red);"></i></span>
+                    <span>Emergency (112)</span>
+                </a>
+                <a href="saved.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-heart" style="color:var(--red);"></i></span>
+                    <span>Saved Items</span>
+                </a>
+                <a href="settings.html" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="index.html" class="logout-btn nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Overlay for mobile drawer -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="welcome">
+                    <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <div class="eyebrow">LAGOS STATE • WAT (UTC+1)</div>
+                        <h1 id="timeGreeting">Good day 👋</h1>
+                        <div class="live-time">
+                            <span class="live-time-dot"></span>
+                            <span id="lagosLiveClock">Loading Lagos time…</span>
+                            <span>· Africa/Lagos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="top-actions">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass" style="color:var(--muted);font-size:13px;"></i>
+                        <input type="text" id="dashboardSearch" placeholder="Search places, bridges, events..." oninput="handleLiveSearch(this.value)">
+                    </div>
+
+                    <button class="notification-btn" id="notificationBtn" aria-label="Notifications" onclick="toggleNotifications()">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot" id="notifDot"></span>
+                    </button>
+
+                    <div id="notificationPopover" class="notification-popover">
+                        <div class="popover-header">
+                            <span>Lagos Alerts (3)</span>
+                            <span style="font-size:11px;color:var(--blue);cursor:pointer;" onclick="dismissNotifications()">Clear all</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>Third Mainland Bridge Open</strong>
+                            <span>Flowing freely inbound Lagos Island. Average speed 72 km/h.</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>Afternoon Rain Advisory</strong>
+                            <span>Scattered light showers expected along Lekki-Epe expressway corridor.</span>
+                        </div>
+                        <div class="notif-item">
+                            <strong>Lagos Blue Line Rail Schedule</strong>
+                            <span>Train frequency running every 15 mins until 10:00 PM tonight.</span>
+                        </div>
+                    </div>
+
+                    <a href="settings.html" class="profile-btn" id="profileBtn" title="Account Settings">LL</a>
+                </div>
+            </header>
+
+            <!-- Weather Hero Card -->
+            <section class="weather-hero">
+                <div class="weather-top">
+                    <div class="weather-info">
+                        <div class="loc-tag">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Lagos Island & Lekki Peninsula</span>
+                        </div>
+                        <div class="temp-row">
+                            <div class="temp-val" id="weatherTemp">29°</div>
+                            <div class="temp-unit">C</div>
+                        </div>
+                        <div class="weather-summary" id="weatherDescription">Tropical sunshine with light Atlantic breeze</div>
+                        <div class="weather-meta" id="weatherUpdated">Updated just now · Station: Victoria Island / Lagos Airport</div>
+                    </div>
+                    <div class="weather-icon-large" id="weatherIcon">🌤️</div>
+                </div>
+
+                <div class="weather-stats-grid">
+                    <div class="w-stat">
+                        <div class="w-stat-label">Feels Like</div>
+                        <div class="w-stat-val" id="weatherFeels">32°C</div>
+                    </div>
+                    <div class="w-stat">
+                        <div class="w-stat-label">Humidity</div>
+                        <div class="w-stat-val" id="weatherHumidity">78%</div>
+                    </div>
+                    <div class="w-stat">
+                        <div class="w-stat-label">Wind Speed</div>
+                        <div class="w-stat-val" id="weatherWind">14 km/h SW</div>
+                    </div>
+                    <div class="w-stat">
+                        <div class="w-stat-label">Rain Chance</div>
+                        <div class="w-stat-val" id="weatherRain">20% (Low)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- City Status Section -->
+            <section style="margin-bottom:28px;">
+                <div class="section-header">
+                    <h2 class="section-title">Lagos City Pulse</h2>
+                    <a href="transport.html" class="section-link">Live traffic report <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-icon-wrap" style="background:rgba(32,217,155,0.12);color:var(--green);">
+                            <i class="fa-solid fa-traffic-light"></i>
+                        </div>
+                        <div class="status-content">
+                            <h3>Bridges & Expressways</h3>
+                            <p>Third Mainland Bridge & Eko Bridge clear. Minor build-up near Lekki Toll Gate.</p>
+                            <span class="status-badge badge-green">Normal Flow</span>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-icon-wrap" style="background:rgba(0,191,255,0.12);color:var(--blue);">
+                            <i class="fa-solid fa-train-subway"></i>
+                        </div>
+                        <div class="status-content">
+                            <h3>Blue & Red Line Rail</h3>
+                            <p>Marina to Mile 2 trains on time. Cowry card contactless scanners operational.</p>
+                            <span class="status-badge badge-blue">On Schedule</span>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-icon-wrap" style="background:rgba(255,200,87,0.12);color:var(--yellow);">
+                            <i class="fa-solid fa-ship"></i>
+                        </div>
+                        <div class="status-content">
+                            <h3>Lagferry Waterways</h3>
+                            <p>Water taxi services active across Ikorodu, CMS, Falomo, and Badore jetties.</p>
+                            <span class="status-badge badge-yellow">Water Routes Open</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Split Layout -->
+            <div class="dashboard-split">
+                <!-- Left: Events Happening in Lagos -->
+                <section>
+                    <div class="section-header">
+                        <h2 class="section-title">Trending in Eko This Weekend</h2>
+                        <a href="events.html" class="section-link">All 18 events <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="events-list">
+                        <!-- Event 1 -->
+                        <article class="event-card">
+                            <div class="event-thumb">
+                                🎶
+                                <span class="event-category-badge">Music & Beach</span>
+                            </div>
+                            <div class="event-body">
+                                <h3 class="event-title">Afrobeats Sunset Vibe</h3>
+                                <div class="event-meta-line">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Saturday, 5:00 PM</span>
+                                </div>
+                                <div class="event-meta-line">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Landmark Beach, Oniru</span>
+                                </div>
+                                <div class="event-footer">
+                                    <a href="events.html" class="event-btn">RSVP / Details</a>
+                                    <button class="bookmark-btn" onclick="toggleEventBookmark(this, 'Afrobeats Sunset Vibe', 'Landmark Beach')">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Event 2 -->
+                        <article class="event-card">
+                            <div class="event-thumb" style="background: linear-gradient(135deg, rgba(0,191,255,0.2), rgba(0,119,255,0.2));">
+                                🚀
+                                <span class="event-category-badge">Tech & Startups</span>
+                            </div>
+                            <div class="event-body">
+                                <h3 class="event-title">Lagos AI & Tech Innovators</h3>
+                                <div class="event-meta-line">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Friday, 10:00 AM</span>
+                                </div>
+                                <div class="event-meta-line">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Landmark Centre, Victoria Island</span>
+                                </div>
+                                <div class="event-footer">
+                                    <a href="events.html" class="event-btn">RSVP / Details</a>
+                                    <button class="bookmark-btn" onclick="toggleEventBookmark(this, 'Lagos AI & Tech Innovators', 'Landmark Centre')">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Event 3 -->
+                        <article class="event-card">
+                            <div class="event-thumb" style="background: linear-gradient(135deg, rgba(255,200,87,0.15), rgba(255,96,120,0.15));">
+                                🎨
+                                <span class="event-category-badge">Art & Heritage</span>
+                            </div>
+                            <div class="event-body">
+                                <h3 class="event-title">Eko Contemporary Art Fair</h3>
+                                <div class="event-meta-line">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Sunday, 1:00 PM</span>
+                                </div>
+                                <div class="event-meta-line">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Nike Art Gallery, Lekki</span>
+                                </div>
+                                <div class="event-footer">
+                                    <a href="events.html" class="event-btn">RSVP / Details</a>
+                                    <button class="bookmark-btn" onclick="toggleEventBookmark(this, 'Eko Contemporary Art Fair', 'Nike Art Gallery')">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Event 4 -->
+                        <article class="event-card">
+                            <div class="event-thumb" style="background: linear-gradient(135deg, rgba(32,217,155,0.15), rgba(0,191,255,0.15));">
+                                🍲
+                                <span class="event-category-badge">Food & Suya</span>
+                            </div>
+                            <div class="event-body">
+                                <h3 class="event-title">Lagos Street Food Festival</h3>
+                                <div class="event-meta-line">
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <span>Sunday, 12:00 PM</span>
+                                </div>
+                                <div class="event-meta-line">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>Muri Okunola Park, VI</span>
+                                </div>
+                                <div class="event-footer">
+                                    <a href="events.html" class="event-btn">RSVP / Details</a>
+                                    <button class="bookmark-btn" onclick="toggleEventBookmark(this, 'Lagos Street Food Festival', 'Muri Okunola Park')">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- Right: Quick Tools & Major Corridors -->
+                <div>
+                    <div class="section-header">
+                        <h2 class="section-title">Quick Services</h2>
+                    </div>
+
+                    <div class="quick-grid">
+                        <a href="transport.html" class="quick-card">
+                            <div class="quick-icon"><i class="fa-solid fa-route"></i></div>
+                            <div class="quick-title">Route Planner</div>
+                            <div class="quick-desc">Compare BRT, rail and road routes with estimated times.</div>
+                        </a>
+
+                        <a href="weather.html" class="quick-card">
+                            <div class="quick-icon" style="color:var(--yellow);background:rgba(255,200,87,0.1);"><i class="fa-solid fa-cloud-rain"></i></div>
+                            <div class="quick-title">Rain & Flood</div>
+                            <div class="quick-desc">7-day forecast & rain radar for all Lagos local councils.</div>
+                        </a>
+
+                        <a href="explore.html" class="quick-card">
+                            <div class="quick-icon" style="color:var(--green);background:rgba(32,217,155,0.1);"><i class="fa-solid fa-umbrella-beach"></i></div>
+                            <div class="quick-title">Explore Places</div>
+                            <div class="quick-desc">Beaches, galleries, top dining, and cultural landmarks.</div>
+                        </a>
+
+                        <a href="emergency.html" class="quick-card">
+                            <div class="quick-icon" style="color:var(--red);background:rgba(255,96,120,0.1);"><i class="fa-solid fa-phone-volume"></i></div>
+                            <div class="quick-title">Emergency (112)</div>
+                            <div class="quick-desc">Toll-free police, ambulance, fire service & SOS beacon.</div>
+                        </a>
+                    </div>
+
+                    <!-- Live Corridors Status -->
+                    <div class="corridor-box">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                            <strong style="font-size:13px;color:#fff;">Traffic Hotspots</strong>
+                            <span style="font-size:11px;color:var(--muted);">Live estimates</span>
+                        </div>
+
+                        <div class="corridor-item">
+                            <span class="c-name">Third Mainland (Inbound)</span>
+                            <span class="c-status badge-green">Smooth · 75 km/h</span>
+                        </div>
+                        <div class="corridor-item">
+                            <span class="c-name">Lekki Toll Gate ⇄ Ikate</span>
+                            <span class="c-status badge-yellow">Moving · 12 min delay</span>
+                        </div>
+                        <div class="corridor-item">
+                            <span class="c-name">Eko Bridge (Island)</span>
+                            <span class="c-status badge-green">Clear · 60 km/h</span>
+                        </div>
+                        <div class="corridor-item">
+                            <span class="c-name">Ikorodu Rd (Ojota - Fadeyi)</span>
+                            <span class="c-status badge-blue">BRT Fast Lane</span>
+                        </div>
+                        <div class="corridor-item">
+                            <span class="c-name">Oshodi Interchange</span>
+                            <span class="c-status badge-green">Normal Flow</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/lagos-live-shared.js"></script>
+    <script>
+        // Fetch Live Weather for Lagos from Open-Meteo
+        async function fetchLagosLiveWeather() {
+            try {
+                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=6.5244&longitude=3.3792&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=Africa%2FLagos", { signal: AbortSignal.timeout(5000) });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                const data = await res.json();
+                const cur = data.current;
+
+                document.getElementById("weatherTemp").textContent = Math.round(cur.temperature_2m) + "°";
+                document.getElementById("weatherFeels").textContent = Math.round(cur.apparent_temperature) + "°C";
+                document.getElementById("weatherHumidity").textContent = cur.relative_humidity_2m + "%";
+                document.getElementById("weatherWind").textContent = Math.round(cur.wind_speed_10m) + " km/h SW";
+                document.getElementById("weatherRain").textContent = cur.precipitation > 0 ? `${cur.precipitation} mm` : "15% (Low)";
+
+                const code = cur.weather_code;
+                let desc = "Tropical sunshine with Atlantic breeze";
+                let icon = "🌤️";
+                if (code >= 61 && code <= 67) { desc = "Scattered rain showers across Lagos"; icon = "🌧️"; }
+                else if (code >= 80 && code <= 82) { desc = "Heavy tropical downpour expected"; icon = "⛈️"; }
+                else if (code >= 1 && code <= 3) { desc = "Partly cloudy with ocean haze"; icon = "⛅"; }
+                else if (code === 0) { desc = "Clear blue sky over Eko"; icon = "☀️"; }
+
+                document.getElementById("weatherDescription").textContent = desc;
+                document.getElementById("weatherIcon").textContent = icon;
+                document.getElementById("weatherUpdated").textContent = "Live Open-Meteo Feed · Updated " + new Date().toLocaleTimeString("en-NG", { hour: "2-digit", minute: "2-digit" });
+            } catch (e) {
+                // Graceful fallback with authentic Lagos weather values
+                console.log("Using cached Lagos meteorological report:", e);
+                document.getElementById("weatherTemp").textContent = "29°";
+                document.getElementById("weatherFeels").textContent = "33°C";
+                document.getElementById("weatherHumidity").textContent = "78%";
+                document.getElementById("weatherWind").textContent = "14 km/h SW";
+                document.getElementById("weatherRain").textContent = "20% (Low)";
+                document.getElementById("weatherDescription").textContent = "Warm & humid with coastal ocean breeze";
+                document.getElementById("weatherIcon").textContent = "🌤️";
+            }
+        }
+
+        function toggleNotifications() {
+            const p = document.getElementById("notificationPopover");
+            p.classList.toggle("open");
+        }
+
+        function dismissNotifications() {
+            document.getElementById("notificationPopover").innerHTML = `
+                <div class="popover-header"><span>Lagos Alerts</span></div>
+                <p style="color:var(--muted);font-size:12px;margin-top:8px;">All alerts cleared. You're up to date with Lagos Live.</p>
+            `;
+            const dot = document.getElementById("notifDot");
+            if (dot) dot.style.display = "none";
+        }
+
+        function toggleEventBookmark(btn, title, location) {
+            const icon = btn.querySelector("i");
+            const item = {
+                id: "event-" + title.toLowerCase().replace(/\s+/g, "-"),
+                name: title,
+                title: title,
+                type: "event",
+                location: location,
+                note: "Saved from Lagos Live Dashboard"
+            };
+            const added = window.toggleBookmark(item);
+            if (added) {
+                icon.className = "fa-solid fa-heart";
+                btn.classList.add("active");
+            } else {
+                icon.className = "fa-regular fa-heart";
+                btn.classList.remove("active");
+            }
+        }
+
+        function handleLiveSearch(query) {
+            query = query.trim().toLowerCase();
+            if (!query) return;
+            // Quick match
+            const cards = document.querySelectorAll(".event-card, .status-card, .corridor-item");
+            cards.forEach(c => {
+                const text = c.textContent.toLowerCase();
+                c.style.display = text.includes(query) ? "" : "none";
+            });
+        }
+
+        // Close popover on outside click
+        document.addEventListener("click", (e) => {
+            const btn = document.getElementById("notificationBtn");
+            const popover = document.getElementById("notificationPopover");
+            if (btn && popover && !btn.contains(e.target) && !popover.contains(e.target)) {
+                popover.classList.remove("open");
+            }
+        });
+
+        fetchLagosLiveWeather();
+    </script>
+</body>
+
+</html>

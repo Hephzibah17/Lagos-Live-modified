@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lagos Live | Live Weather, Traffic, Events & City Pulse</title>
+    <meta name="description" content="Discover what's happening, check live weather and traffic, explore places, follow transport updates, and stay connected to Lagos." />
+    <meta property="og:title" content="Lagos Live" />
+    <meta property="og:description" content="Discover what's happening, check live weather and traffic, explore places, follow transport updates, and stay connected to Lagos." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="/lagos-live-logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="/lagos-live-shared.css">
+
+    <style>
+        :root {
+            --bg: #070d14;
+            --panel: rgba(13, 24, 36, .92);
+            --panel-2: #101923;
+            --input: #0b151f;
+            --border: #20303e;
+            --text: #f5f9fc;
+            --muted: #8ea3b8;
+            --blue: #00bfff;
+            --blue-2: #0077ff;
+            --green: #20d99b;
+            --red: #ff6078;
+            --yellow: #ffc857;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", sans-serif;
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            background:
+                linear-gradient(rgba(5, 10, 16, 0.72), rgba(6, 16, 25, 0.85)),
+                url("/lagos-ikoyi.jpg") center / cover no-repeat fixed;
+            background-color: var(--bg);
+            overflow-x: hidden;
+        }
+
+        /* Top Bar */
+        .landing-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 32px;
+            background: rgba(7, 13, 20, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .brand-logo {
+            height: 38px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .brand-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #00bfff, #20d99b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: #fff;
+        }
+
+        .btn-guest {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-2));
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0, 191, 255, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-guest:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.45);
+        }
+
+        /* Main Container */
+        .page-container {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            padding-top: 80px;
+            position: relative;
+        }
+
+        @media (max-width: 980px) {
+            .page-container {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .landing-nav {
+                padding: 14px 20px;
+            }
+        }
+
+        /* Hero Left Column */
+        .hero-section {
+            padding: 50px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .hero-section {
+                padding: 30px 20px;
+            }
+        }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(32, 217, 155, 0.12);
+            border: 1px solid rgba(32, 217, 155, 0.3);
+            color: var(--green);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            width: fit-content;
+            margin-bottom: 24px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 217, 155, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(32, 217, 155, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 217, 155, 0); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.2rem, 4vw, 3.4rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.2px;
+            margin-bottom: 20px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #00bfff, #20d99b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 1.05rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 540px;
+        }
+
+        /* Live Ticker Cards */
+        .live-ticker {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 36px;
+            max-width: 540px;
+        }
+
+        @media (max-width: 520px) {
+            .live-ticker {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ticker-card {
+            background: rgba(16, 25, 35, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .ticker-card:hover {
+            border-color: rgba(0, 191, 255, 0.4);
+        }
+
+        .ticker-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(0, 191, 255, 0.1);
+            color: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .ticker-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .ticker-info p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-2));
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(0, 191, 255, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-lg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 191, 255, 0.5);
+        }
+
+        .btn-secondary-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            border: 1px solid var(--border);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary-lg:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Right Column Form */
+        .form-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--panel);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(11, 21, 31, 0.8);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 9px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 191, 255, 0.15);
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .form-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2);
+        }
+
+        .input-wrapper i {
+            color: var(--muted);
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-input::placeholder {
+            color: #55697d;
+        }
+
+        .form-select {
+            width: 100%;
+            height: 44px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .form-select option {
+            background: #0b151f;
+            color: #fff;
+        }
+
+        .password-toggle {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(135deg, var(--blue), var(--blue-2));
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: #485c70;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .quick-guest-btn {
+            width: 100%;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .quick-guest-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <nav class="landing-nav">
+        <a href="index.html" class="brand-link">
+            <img src="/lagos-live-logo.png" alt="Lagos Live" class="brand-logo" onerror="this.src='lagos live logo.png'">
+            <span class="brand-title">LAGOS LIVE</span>
+        </a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="weather.html" class="nav-link">Weather</a>
+            <a href="transport.html" class="nav-link">Transport & Traffic</a>
+            <a href="events.html" class="nav-link">Events</a>
+            <a href="explore.html" class="nav-link">Explore</a>
+            <a href="emergency.html" class="nav-link">Emergency</a>
+        </div>
+        <div>
+            <a href="dashboard.html" class="btn-guest">
+                <span>Open Dashboard</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="page-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="badge-live">
+                <span class="pulse-dot"></span>
+                <span>LAGOS CITY PULSE • LIVE WAT</span>
+            </div>
+            <h1 class="hero-title">
+                The heartbeat of <span>Eko</span>, right in your pocket.
+            </h1>
+            <p class="hero-desc">
+                Discover what's happening, check live weather, monitor traffic hotspots like Third Mainland Bridge, follow transport updates, and stay connected with emergency services across Lagos State.
+            </p>
+
+            <!-- Live Tickers -->
+            <div class="live-ticker">
+                <div class="ticker-card">
+                    <div class="ticker-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                    <div class="ticker-info">
+                        <h4>29°C Partly Cloudy</h4>
+                        <p>Lekki Peninsula · 78% Humidity</p>
+                    </div>
+                </div>
+                <div class="ticker-card">
+                    <div class="ticker-icon" style="color:var(--green); background:rgba(32,217,155,0.1);"><i class="fa-solid fa-bridge"></i></div>
+                    <div class="ticker-info">
+                        <h4>Third Mainland Bridge</h4>
+                        <p style="color:var(--green);">Smooth · 75 km/h avg</p>
+                    </div>
+                </div>
+                <div class="ticker-card">
+                    <div class="ticker-icon" style="color:var(--blue); background:rgba(0,191,255,0.1);"><i class="fa-solid fa-train"></i></div>
+                    <div class="ticker-info">
+                        <h4>Lagos Blue Line Rail</h4>
+                        <p>Marina ⇄ Mile 2 On Schedule</p>
+                    </div>
+                </div>
+                <div class="ticker-card">
+                    <div class="ticker-icon" style="color:var(--yellow); background:rgba(255,200,87,0.1);"><i class="fa-solid fa-calendar-star"></i></div>
+                    <div class="ticker-info">
+                        <h4>Events This Week</h4>
+                        <p>14 Concerts & Tech Summits</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Action Buttons -->
+            <div class="hero-cta">
+                <a href="dashboard.html" class="btn-primary-lg">
+                    <span>Enter City Dashboard</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="explore.html" class="btn-secondary-lg">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Explore Lagos Spots</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Auth Form Section -->
+        <div class="form-section">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" id="tab-login" onclick="switchAuthMode('login')">Log In</button>
+                    <button class="tab-btn" id="tab-signup" onclick="switchAuthMode('signup')">Create Account</button>
+                </div>
+
+                <h2 class="form-title" id="form-title">Welcome back to Lagos Live</h2>
+                <p class="form-sub" id="form-sub">Sign in to sync your bookmarks, saved routes, and alerts.</p>
+
+                <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                    <div class="form-group" id="group-name" style="display: none;">
+                        <label class="form-label">Full Name</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="fullname" class="form-input" placeholder="e.g. Tunde Balogun">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="email" class="form-input" placeholder="tunde@lagoslive.ng" required value="guest@lagoslive.ng">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="group-area" style="display: none;">
+                        <label class="form-label">Primary Lagos Neighborhood</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <select id="area" class="form-select">
+                                <option value="Lekki Phase 1">Lekki Phase 1</option>
+                                <option value="Victoria Island">Victoria Island</option>
+                                <option value="Ikoyi">Ikoyi</option>
+                                <option value="Ikeja & GRA">Ikeja & GRA</option>
+                                <option value="Yaba & Surulere">Yaba & Surulere</option>
+                                <option value="Lagos Island & Marina">Lagos Island & Marina</option>
+                                <option value="Ikorodu">Ikorodu</option>
+                                <option value="Ajah & Sangotedo">Ajah & Sangotedo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••" required value="password123">
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <i class="fa-regular fa-eye" id="pwdIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="btnText">Log In to Lagos Live</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>Or quick explore</span>
+                </div>
+
+                <a href="dashboard.html" class="quick-guest-btn" onclick="continueAsGuest()">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Continue as Lagos Explorer (Guest)</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/lagos-live-shared.js"></script>
+    <script>
+        let currentMode = "login";
+
+        function switchAuthMode(mode) {
+            currentMode = mode;
+            const tabLogin = document.getElementById("tab-login");
+            const tabSignup = document.getElementById("tab-signup");
+            const groupName = document.getElementById("group-name");
+            const groupArea = document.getElementById("group-area");
+            const formTitle = document.getElementById("form-title");
+            const formSub = document.getElementById("form-sub");
+            const btnText = document.getElementById("btnText");
+
+            if (mode === "signup") {
+                tabSignup.classList.add("active");
+                tabLogin.classList.remove("active");
+                groupName.style.display = "block";
+                groupArea.style.display = "block";
+                formTitle.textContent = "Join the Lagos Live Community";
+                formSub.textContent = "Personalize your transit feeds, weather alerts, and events.";
+                btnText.textContent = "Create Lagos Live Account";
+            } else {
+                tabLogin.classList.add("active");
+                tabSignup.classList.remove("active");
+                groupName.style.display = "none";
+                groupArea.style.display = "none";
+                formTitle.textContent = "Welcome back to Lagos Live";
+                formSub.textContent = "Sign in to sync your bookmarks, saved routes, and alerts.";
+                btnText.textContent = "Log In to Lagos Live";
+            }
+        }
+
+        function togglePassword() {
+            const pwdInput = document.getElementById("password");
+            const icon = document.getElementById("pwdIcon");
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+                icon.className = "fa-regular fa-eye-slash";
+            } else {
+                pwdInput.type = "password";
+                icon.className = "fa-regular fa-eye";
+            }
+        }
+
+        function continueAsGuest() {
+            const guestUser = {
+                id: "guest-" + Date.now(),
+                name: "Lagos Explorer",
+                email: "guest@lagoslive.ng",
+                area: "Lekki Phase 1",
+                role: "guest"
+            };
+            localStorage.setItem("lagosLiveUser", JSON.stringify(guestUser));
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const name = document.getElementById("fullname")?.value.trim() || (email.split("@")[0].toUpperCase());
+            const area = document.getElementById("area")?.value || "Lagos";
+
+            const user = {
+                id: "user-" + Date.now(),
+                name: name,
+                email: email,
+                area: area,
+                role: "member",
+                signedInAt: new Date().toISOString()
+            };
+
+            localStorage.setItem("lagosLiveUser", JSON.stringify(user));
+            if (window.showToast) {
+                window.showToast("Welcome to Lagos Live", `Opening your dashboard for ${name}...`, "success");
+            }
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
